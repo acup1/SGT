@@ -1,36 +1,52 @@
 #!python
 import os
 import curses
+import subprocess
 
 
-def git_add():
-    pass
+def script_exec():
+    global selected_script
+    os.execl(*[f"./actions/{menu[selected_script]}"] * 2)
 
 
-def comnpush():
-    pass
+menu = os.listdir("actions")
 
-
-menu = {
-    "add -A": git_add,
-    "commit & push": comnpush,
-}
+selected_script = -1
 
 
 def main(stdscr):
+    global selected_script
     stdscr.clear()
-    for i, j in enumerate(menu.keys()):
-        stdscr.addstr(i, 0, j)
-    stdscr.refresh()
-    stdscr.move(0, 0)
 
-    key = ""
-    while key != curses.KEY_ENTER:
+    list_len = len(menu)
+    pos_menu = {}
+    stdscr.addstr("select action(q for exit):\n")
+    for i, j in enumerate(menu):
+        y, x = stdscr.getyx()
+        pos_menu[y] = i
+        stdscr.addstr(f"{i}: {j}\n")
+    stdscr.refresh()
+    stdscr.move(min(pos_menu.keys()), 0)
+    y, x = stdscr.getyx()
+
+    key = 0
+    while 1:
         key = stdscr.getch()
-        stdscr.addstr(10, 0, char(curses.KEY_ENTER))
-        stdscr.refresh()
+        if key == curses.KEY_UP:
+            if min(pos_menu.keys()) <= y - 1:
+                stdscr.move(y - 1, 0)
+            y, x = stdscr.getyx()
+        if key == curses.KEY_DOWN:
+            if y + 1 <= max(pos_menu.keys()):
+                stdscr.move(y + 1, 0)
+            y, x = stdscr.getyx()
+        if chr(key) == "q":
+            break
+        if chr(key) == "\n":
+            selected_script = pos_menu[y]
+            break
 
 
 if __name__ == "__main__":
-    # Initialize curses and run the main function
     curses.wrapper(main)
+    script_exec()
