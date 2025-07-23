@@ -3,19 +3,21 @@ import os
 import curses
 import subprocess
 
+home = os.getenv("HOME")
+print(home)
+
 
 def script_exec():
     global selected_script
     if selected_script != -1:
-        os.execl(*[f"./actions/{menu[selected_script]}"] * 2)
+        os.execl(*[f"{home}/.config/SGT/{menu[selected_script]}"] * 2)
 
 
 def get_cmd_text(cmd: str):
     return subprocess.run(cmd.split(), capture_output=True, text=True).stdout
 
 
-menu = os.listdir("actions")
-
+menu = os.listdir(f"{home}/.config/SGT/")
 selected_script = -1
 
 
