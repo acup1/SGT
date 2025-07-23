@@ -6,7 +6,8 @@ import subprocess
 
 def script_exec():
     global selected_script
-    os.execl(*[f"./actions/{menu[selected_script]}"] * 2)
+    if selected_script != -1:
+        os.execl(*[f"./actions/{menu[selected_script]}"] * 2)
 
 
 def get_cmd_text(cmd: str):
@@ -32,7 +33,7 @@ def main(stdscr):
     for i, j in enumerate(menu):
         y, x = stdscr.getyx()
         pos_menu[y] = i
-        stdscr.addstr(f"\t{i}: {j}\n")
+        stdscr.addstr(f"  {i}: {j}\n")
     stdscr.refresh()
     stdscr.move(min(pos_menu.keys()), 0)
     y, x = stdscr.getyx()
