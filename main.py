@@ -9,6 +9,10 @@ def script_exec():
     os.execl(*[f"./actions/{menu[selected_script]}"] * 2)
 
 
+def get_cmd_text(cmd: str):
+    return subprocess.run(cmd.split(), capture_output=True, text=True).stdout
+
+
 menu = os.listdir("actions")
 
 selected_script = -1
@@ -20,11 +24,15 @@ def main(stdscr):
 
     list_len = len(menu)
     pos_menu = {}
+
+    stdscr.addstr("branches:\n")
+    stdscr.addstr(get_cmd_text("git branch"))
+
     stdscr.addstr("select action(q for exit):\n")
     for i, j in enumerate(menu):
         y, x = stdscr.getyx()
         pos_menu[y] = i
-        stdscr.addstr(f"{i}: {j}\n")
+        stdscr.addstr(f"\t{i}: {j}\n")
     stdscr.refresh()
     stdscr.move(min(pos_menu.keys()), 0)
     y, x = stdscr.getyx()
